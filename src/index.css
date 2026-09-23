@@ -1,0 +1,138 @@
+@import "tailwindcss";
+
+:root {
+  --background: #FFF8EA;
+  --foreground: #4A2A16;
+  --card: #FFFDF7;
+  --card-foreground: #4A2A16;
+  --primary: #3E7A4C;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F2D9A8;
+  --secondary-foreground: #4A2A16;
+  --muted: #F8EBD2;
+  --muted-foreground: #7A5A3E;
+  --accent: #F0964B;
+  --accent-foreground: #3A1F0E;
+  --destructive: #C8432E;
+  --destructive-foreground: #FFFFFF;
+  --border: #E9D3A8;
+  --input: #D8BC8A;
+  --ring: #E8553E;
+  --radius: 1.5rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* ——— Key Common Ground: project styles ——— */
+
+:root {
+  --sand-deep: #F3DDB3;
+  --coral-ink: #B8402B; /* coral dark enough for small text on cream (4.5:1+) */
+  --bark: #3A2112;      /* the composer bar at the bottom of the deck */
+}
+
+@theme {
+  --font-sans: "Outfit", "Noto Sans TC", ui-sans-serif, sans-serif;
+  --font-mono: "Space Mono", "Noto Sans TC", ui-monospace, monospace;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.ground {
+  background: linear-gradient(180deg, var(--background) 0%, var(--background) 30%, var(--sand-deep) 100%);
+  background-attachment: fixed;
+}
+
+.label {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3.5rem;
+  padding: 0 1.25rem;
+  border-radius: 9999px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+  box-shadow: 0 4px 0 rgba(58, 33, 18, 0.16);
+  cursor: pointer;
+}
+.pill:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(58, 33, 18, 0.16); }
+.pill:focus-visible { outline: 3px solid var(--ring); outline-offset: 3px; }
+.pill:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
+.pill-agree { background: var(--primary); color: var(--primary-foreground); }
+.pill-disagree { background: var(--destructive); color: var(--destructive-foreground); }
+.pill-unsure { background: var(--secondary); color: var(--secondary-foreground); }
+.pill-quiet { background: var(--card); color: var(--foreground); border: 1.5px solid var(--border); box-shadow: none; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 9999px;
+  padding: 0.2rem 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(14px) rotate(-0.5deg); }
+  to { opacity: 1; transform: none; }
+}
+.card-in { animation: card-in 0.28s ease-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  .card-in { animation: none; }
+  .pill { transition: none; }
+}
+
+@media print {
+  .no-print { display: none !important; }
+  .ground { background: #fff; }
+  section { break-inside: avoid; }
+}
