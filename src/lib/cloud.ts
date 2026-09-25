@@ -10,7 +10,7 @@ import { env } from '@/env';
  * Decisions are trusted only when their document is stamped with one of these.
  * If the platform stamps a display name instead of an email, list the exact sign-in names instead.
  */
-export const STEWARDS: string[] = [];
+export const STEWARDS: string[] = ['josh@relationaltechproject.org'];
 
 const E = env as unknown as Record<string, string | undefined>;
 export const cloudReady = Boolean(E.COMMUNITY_CLOUD_URL && E.APP_ID);

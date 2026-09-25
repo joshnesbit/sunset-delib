@@ -125,9 +125,10 @@ parent/teacher comparison and divisions, the demo report, the steward page, and 
 
 **Not ready for families yet:**
 
-- **No stewards are listed yet.** Votes and statements now go to the shared
-  Community Cloud backend, and the steward page asks for email-code sign-in.
-  Until emails are added to `STEWARDS` in `src/lib/cloud.ts`, nobody can moderate.
+- **One steward so far.** Votes and statements go to the shared Community
+  Cloud backend, and the steward page asks for email-code sign-in. Only
+  josh@relationaltechproject.org is in `STEWARDS` in `src/lib/cloud.ts`; add
+  more emails there to share moderation.
 - **Anonymous writes are open.** Steward decisions only count when signed by a
   listed steward, but vote-stuffing is caught only by the fast-voter set-aside.
 - **The Chinese is a first draft** and needs a native reader, both the interface
@@ -141,7 +142,7 @@ parent/teacher comparison and divisions, the demo report, the steward page, and 
       speaker) reviews and edits `statements.ts`
 - [ ] Native reader checks all Traditional Chinese
 - [x] FSK steward named: Josh (josh@relationaltechproject.org), listed on About
-- [ ] Josh's sign-in email added to `STEWARDS` in `src/lib/cloud.ts`
+- [x] Josh's sign-in email added to `STEWARDS` in `src/lib/cloud.ts`
 - [ ] In-person conversations at drop-off and pick-up, arranged by emailing Josh
 - [ ] QR code on the 43rd Ave fence and in school newsletters, in both languages
 - [ ] A two-week window, and a closing SSC or PTA meeting date (list it on
