@@ -24,8 +24,8 @@ export default function Terms() {
     [
       L('Who moderates', '由誰審核'),
       L(
-        'Josh and the FSK steward read every new statement before anyone sees it. They may fix spelling and add a translation. They never change what a statement means. If a statement would need its meaning changed, it is not published.',
-        'Josh 和 FSK 負責人會在任何人看到之前閱讀每則新陳述。他們可以修正錯字並加上翻譯，但絕不改變陳述的意思。如果需要改變意思才能發佈，該陳述就不會發佈。'
+        'Josh, the FSK steward for this conversation, reads every new statement before anyone sees it. He may fix spelling and add a translation. He never changes what a statement means. If a statement would need its meaning changed, it is not published.',
+        'Josh 是這次對話的 FSK 負責人，會在任何人看到之前閱讀每則新陳述。他可以修正錯字並加上翻譯，但絕不改變陳述的意思。如果需要改變意思才能發佈，該陳述就不會發佈。'
       ),
     ],
     [
@@ -45,8 +45,8 @@ export default function Terms() {
     [
       L('Disagree with a decision?', '不同意某個決定？'),
       L(
-        'Leave a note for the steward at the FSK front office, 1530 43rd Ave. A person will get back to you.',
-        '請到 FSK 校務處（43 街 1530 號）留言給負責人，會有專人回覆你。'
+        'Email Josh, the steward, at josh@relationaltechproject.org. He will get back to you, and you can meet in person at drop-off or pick-up.',
+        '請電郵負責人 Josh（josh@relationaltechproject.org），他會回覆你，也可以在接送孩子時當面談。'
       ),
     ],
   ];

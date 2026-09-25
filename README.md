@@ -134,17 +134,15 @@ parent/teacher comparison and divisions, the demo report, the steward page, and 
   text and the statements.
 - **The About page says an FSK parent and teacher reviewed the statements.**
   That review hasn't happened. Do it before launch, or change the sentence.
-- **The FSK steward isn't named yet.** The About page shows "being named."
 
 ## Launch checklist
 
 - [ ] Editorial trio (Josh, one FSK teacher, one FSK parent, ideally a Cantonese
       speaker) reviews and edits `statements.ts`
 - [ ] Native reader checks all Traditional Chinese
-- [ ] A named FSK steward (principal, PTA or SSC chair) agrees to answer for this,
-      and their name goes on About
-- [ ] Steward sign-in emails added to `STEWARDS` in `src/lib/cloud.ts`
-- [ ] Paper ballots at the front office and pickup, plus a volunteer to key them in
+- [x] FSK steward named: Josh (josh@relationaltechproject.org), listed on About
+- [ ] Josh's sign-in email added to `STEWARDS` in `src/lib/cloud.ts`
+- [ ] In-person conversations at drop-off and pick-up, arranged by emailing Josh
 - [ ] QR code on the 43rd Ave fence and in school newsletters, in both languages
 - [ ] A two-week window, and a closing SSC or PTA meeting date (list it on
       [Outer Sunset Today](https://outersunset.today))
@@ -154,7 +152,7 @@ parent/teacher comparison and divisions, the demo report, the steward page, and 
 
 - Shared storage with steward sign-in, and clustering run on shared snapshots
   instead of one device
-- Printable bilingual paper ballot and a volunteer key-in screen
+
 - Later: Spanish, a "does this reflect you?" reply on the report, a steward
   digest email, a public export of the anonymized results as an open dataset,
   and a remix guide for other SFUSD schools
@@ -168,8 +166,8 @@ Built in the Responsive Cities Studio. The principles that shaped real decisions
 - **Community in the loop.** A person approves every new statement and every
   translation, and people name the groups, not software.
 - **Build for the resident who never calls 311.** It's bilingual from day one,
-  paper ballots and the front-office counter count as real ways in, and it
-  needs no account.
+  it needs no account, and anyone who'd rather talk in person can email Josh
+  to meet at drop-off or pick-up.
 - **Glass box, not black box.** The method, the number of participants, and the
   stewards are on the page, and the report shows an honest locked state instead
   of fake results.
