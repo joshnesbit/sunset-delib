@@ -6,6 +6,7 @@ import Add from '@/pages/Add';
 import Report from '@/pages/Report';
 import Steward from '@/pages/Steward';
 import About from '@/pages/About';
+import Terms from '@/pages/Terms';
 
 export default function App() {
   const lang = useStore((s) => s.lang);
@@ -23,6 +24,7 @@ export default function App() {
           <Route path="/report" element={<Report />} />
           <Route path="/steward" element={<Steward />} />
           <Route path="/about" element={<About />} />
+          <Route path="/terms" element={<Terms />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>

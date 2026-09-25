@@ -7,6 +7,22 @@ export type VoteValue = -1 | 0 | 1;
 export type Vote = { pid: string; sid: string; v: VoteValue; at: number };
 export type Participant = { id: string; role: Role; lang: Lang; createdAt: number };
 export type Flag = { id: string; sid: string; at: number; resolved: boolean };
+export type SubmitResult = 'ok' | 'rate' | 'duplicate' | 'spam';
+export type SubmitMeta = { trap: string; openedAt: number };
+
+const RATE_WINDOW = 10 * 60 * 1000;
+const RATE_MAX = 3;
+const DAY_MAX = 8;
+const FAST_WRITE_MS = 4000;
+const norm = (x: string) => x.toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
+
+function looksGarbled(text: string): boolean {
+  if (!/\p{L}/u.test(text)) return true;
+  if (/(.)\1{5,}/u.test(text)) return true;
+  const letters = text.match(/[A-Za-z]/g)?.length ?? 0;
+  const upper = text.match(/[A-Z]/g)?.length ?? 0;
+  return letters > 20 && upper / letters > 0.7;
+}
 
 const newId = () =>
   typeof crypto !== 'undefined' && 'randomUUID' in crypto
@@ -30,7 +46,7 @@ type State = {
   start: (role: Role) => void;
   end: () => void;
   vote: (sid: string, v: VoteValue) => void;
-  submit: (text: string) => void;
+  submit: (text: string, meta: SubmitMeta) => SubmitResult;
   moderate: (id: string, patch: ModerationPatch) => void;
   setSeedHidden: (sid: string, hidden: boolean) => void;
   flag: (sid: string) => void;
@@ -74,11 +90,21 @@ export const useStore = create<State>()(
         }));
       },
 
-      submit: (text) => {
-        const { currentId, participants, lang } = get();
+      submit: (text, { trap, openedAt }) => {
+        const { currentId, participants, lang, submitted } = get();
         const author = participants.find((p) => p.id === currentId);
-        const clean = text.trim();
-        if (!clean) return;
+        const clean = text.trim().replace(/\s+/g, ' ');
+        if (!clean || looksGarbled(clean)) return 'spam';
+        // Honeypot: a field people never see. If it's filled, say thanks and keep nothing.
+        if (trap) return 'ok';
+        const now = Date.now();
+        const mine = submitted.filter((x) => x.authorId === currentId && x.createdAt);
+        if (
+          mine.filter((x) => now - x.createdAt! < RATE_WINDOW).length >= RATE_MAX ||
+          mine.filter((x) => now - x.createdAt! < 86_400_000).length >= DAY_MAX
+        ) return 'rate';
+        const n = norm(clean);
+        if ([...SEED_STATEMENTS, ...submitted].some((x) => norm(x.en) === n || norm(x.zh) === n)) return 'duplicate';
         const st: Statement = {
           id: 'p-' + newId().slice(0, 8),
           en: lang === 'en' ? clean : '',
@@ -87,9 +113,12 @@ export const useStore = create<State>()(
           source: 'participant',
           status: 'pending',
           authorRole: author?.role,
-          createdAt: Date.now(),
+          authorId: currentId ?? undefined,
+          signals: now - openedAt < FAST_WRITE_MS ? ['fast'] : [],
+          createdAt: now,
         };
         set((s) => ({ submitted: [...s.submitted, st] }));
+        return 'ok';
       },
 
       moderate: (id, patch) =>
@@ -110,7 +139,7 @@ export const useStore = create<State>()(
 
       resetLocal: () => set({ ...empty, seenAddGuide: false }),
     }),
-    { name: 'key-common-ground-v1' }
+    { name: 'key-common-ground-v2' }
   )
 );
 

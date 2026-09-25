@@ -155,6 +155,11 @@ export default function Report() {
               `Method: each person's votes place them on a map (PCA); similar voters form groups (k-means, 2–4 groups). Only people with ${MIN_VOTES}+ votes count. Group names are written by people, not software.`,
               `方法：每人的投票把他們放在一張圖上（主成分分析）；投票相近的人組成群組（k-means，2–4 組）。只計算投了 ${MIN_VOTES} 票以上的人。群組名稱由人撰寫，而非軟體。`
             )}{' '}
+            {result && result.setAside > 0 &&
+              L(
+                `${result.setAside} voting session${result.setAside === 1 ? ' was' : 's were'} set aside for voting faster than a person can read.`,
+                `有 ${result.setAside} 個投票紀錄因速度快過常人閱讀而被排除。`
+              )}{' '}
             <Link to="/about" className="underline underline-offset-2">{L('More', '更多')}</Link>
           </p>
         </Section>

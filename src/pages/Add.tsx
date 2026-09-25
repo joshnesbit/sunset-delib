@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import TopBar from '@/components/TopBar';
-import { useStore } from '@/lib/store';
+import { useStore, type SubmitResult } from '@/lib/store';
 import { t, type StringKey } from '@/lib/i18n';
 
 const MAX = 160;
@@ -12,6 +12,12 @@ const GUIDE: [StringKey, StringKey][] = [
   ['guide3b', 'guide3'],
   ['guide4b', 'guide4'],
 ];
+const STARTERS: StringKey[] = ['starter1', 'starter2', 'starter3', 'starter4'];
+const ERRORS: Record<Exclude<SubmitResult, 'ok'>, StringKey> = {
+  rate: 'errRate',
+  duplicate: 'errDuplicate',
+  spam: 'errSpam',
+};
 
 export default function Add() {
   const lang = useStore((s) => s.lang);
@@ -21,8 +27,11 @@ export default function Add() {
   const submit = useStore((s) => s.submit);
   const navigate = useNavigate();
   const [text, setText] = useState('');
+  const [trap, setTrap] = useState('');
+  const [openedAt, setOpenedAt] = useState(() => Date.now());
   const [showGuide, setShowGuide] = useState(false);
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState<StringKey | null>(null);
 
   if (!currentId) return <Navigate to="/" replace />;
 
@@ -44,7 +53,16 @@ export default function Add() {
                   {t(lang, rest)}
                 </li>
               ))}
+              <li>
+                <strong>{t(lang, 'guide5b')}</strong>
+                {t(lang, 'guide5')}
+                <Link to="/terms" className="text-[var(--coral-ink)] underline underline-offset-2">
+                  {t(lang, 'termsLink')}
+                </Link>
+                {t(lang, 'termsEnd')}
+              </li>
             </ul>
+            <p className="text-sm text-muted-foreground">{t(lang, 'guideLang')}</p>
             <p>{t(lang, 'guideOutro')}</p>
             <button
               type="button"
@@ -52,6 +70,7 @@ export default function Add() {
               onClick={() => {
                 markSeen();
                 setShowGuide(false);
+                setOpenedAt(Date.now());
               }}
             >
               {t(lang, 'gotIt')}
@@ -79,6 +98,7 @@ export default function Add() {
               onClick={() => {
                 setText('');
                 setSent(false);
+                setOpenedAt(Date.now());
               }}
             >
               {t(lang, 'addAnother')}
@@ -89,11 +109,24 @@ export default function Add() {
     );
   }
 
+  const send = () => {
+    const result = submit(text, { trap, openedAt });
+    if (result === 'ok') {
+      setError(null);
+      setSent(true);
+    } else {
+      setError(ERRORS[result]);
+    }
+  };
+
   return (
     <div className="mx-auto flex min-h-dvh max-w-2xl flex-col">
       <TopBar showEnd />
       <main className="flex flex-1 flex-col gap-4 px-4 py-6 md:px-6">
-        <h1 className="text-2xl font-semibold leading-snug md:text-3xl">{t(lang, 'question')}</h1>
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-semibold leading-snug md:text-3xl">{t(lang, 'promptTitle')}</h1>
+          <p className="text-muted-foreground">{t(lang, 'promptHint')}</p>
+        </div>
         <button
           type="button"
           className="label self-start text-muted-foreground hover:text-foreground"
@@ -101,7 +134,7 @@ export default function Add() {
         >
           {t(lang, 'showInstructions')} →
         </button>
-        <div className="flex flex-1 flex-col rounded-[var(--radius)] bg-card p-5 shadow-md">
+        <div className="flex flex-1 flex-col gap-3 rounded-[var(--radius)] bg-card p-5 shadow-md">
           <label htmlFor="stmt" className="sr-only">
             {t(lang, 'typeHere')}
           </label>
@@ -109,14 +142,40 @@ export default function Add() {
             id="stmt"
             value={text}
             maxLength={MAX}
-            onChange={(e) => setText(e.target.value)}
+            onChange={(e) => {
+              setText(e.target.value);
+              setError(null);
+            }}
             placeholder={t(lang, 'typeHere')}
-            className="min-h-48 flex-1 resize-none bg-transparent text-xl leading-snug outline-none placeholder:text-muted-foreground/80"
+            className="min-h-40 flex-1 resize-none bg-transparent text-xl leading-snug outline-none placeholder:text-muted-foreground/80"
             autoFocus
           />
-          <div className="label flex justify-between pt-2">
-            <span className="text-[var(--coral-ink)]">{hasLink ? t(lang, 'noLinks') : ''}</span>
-            <span className="text-muted-foreground">
+          {!text && (
+            <div className="flex flex-wrap gap-2">
+              {STARTERS.map((k) => (
+                <button
+                  key={k}
+                  type="button"
+                  className="chip min-h-10 bg-muted px-3 text-sm normal-case tracking-normal text-foreground hover:bg-secondary"
+                  onClick={() => {
+                    setText(t(lang, k));
+                    document.getElementById('stmt')?.focus();
+                  }}
+                >
+                  {t(lang, k).trim()}…
+                </button>
+              ))}
+            </div>
+          )}
+          <div className="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
+            <label htmlFor="website">Website</label>
+            <input id="website" name="website" tabIndex={-1} autoComplete="off" value={trap} onChange={(e) => setTrap(e.target.value)} />
+          </div>
+          <div className="label flex justify-between gap-3">
+            <span className="text-[var(--coral-ink)]" role="status">
+              {hasLink ? t(lang, 'noLinks') : error ? t(lang, error) : ''}
+            </span>
+            <span className="shrink-0 text-muted-foreground">
               {text.length} / {MAX} {t(lang, 'chars')}
             </span>
           </div>
@@ -125,15 +184,7 @@ export default function Add() {
           <button type="button" className="pill pill-disagree" onClick={() => navigate('/')}>
             {t(lang, 'goBack')}
           </button>
-          <button
-            type="button"
-            className="pill pill-agree"
-            disabled={!canSend}
-            onClick={() => {
-              submit(text);
-              setSent(true);
-            }}
-          >
+          <button type="button" className="pill pill-agree" disabled={!canSend} onClick={send}>
             {t(lang, 'submit')}
           </button>
         </div>

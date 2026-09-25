@@ -93,7 +93,8 @@ so the same file can later run server-side unchanged.
 
 | File | What's in it |
 |---|---|
-| `src/data/statements.ts` | **The 40 bilingual seed statements** across 8 themes. This is the file the editorial trio edits |
+| `src/data/statements.ts` | **The 43 bilingual seed statements** across 8 themes, drawn from FSK's draft *Tech With Intention* policy (v0.3). This is the file the editorial trio edits |
+| `src/pages/Terms.tsx` | Terms of Use & Moderation Policy, linked from the add-a-statement screen |
 | `src/lib/i18n.ts` | Every interface string in English and Traditional Chinese |
 | `src/lib/store.ts` | Votes, participants, submissions, flags (on-device for now) |
 | `src/lib/clustering.ts` | PCA + k-means + consensus / divisive / role analysis |

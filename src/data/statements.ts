@@ -1,16 +1,17 @@
 /*
  * SEED STATEMENTS: a DRAFT for the editorial trio (Josh, one FSK teacher, one FSK parent).
- * Edit freely: rewrite, cut, add. Balance rule: roughly a third lean toward more tech use,
- * a third toward limits, a third conditional or about process. One idea per statement.
- * The Traditional Chinese is a first-pass draft. Have a native reader check every line before launch.
- * Drawn from public reporting (Tech in Check's petition, UESF, SF Parents Coalition, SFUSD statements);
- * none of these are quotes from FSK families.
+ * Drawn from the proposals in "FSK: Tech With Intention" (draft policy v0.3, Sep 2026) and the
+ * debate around it: each policy line appears as something a person could agree OR disagree with,
+ * alongside the strongest counter-positions. None are quotes from FSK families or survey results.
+ * Balance rule: roughly a third lean toward more tech use, a third toward limits, a third
+ * conditional or about process. One idea per statement.
+ * The Traditional Chinese is a first-pass draft. A native reader must check every line before launch.
  */
 
 export type Role = 'parent' | 'staff' | 'both';
 export type ThemeId =
-  | 'devices' | 'tutors' | 'genai' | 'teachers'
-  | 'privacy' | 'evidence' | 'equity' | 'decide' | 'open';
+  | 'screens' | 'breaks' | 'learning' | 'ai' | 'dojo'
+  | 'families' | 'teachers' | 'decide' | 'open';
 export type Lean = 'more' | 'limits' | 'conditional';
 export type Status = 'approved' | 'pending' | 'hidden';
 
@@ -23,18 +24,20 @@ export type Statement = {
   source: 'seed' | 'participant';
   status: Status;
   authorRole?: Role;
+  authorId?: string;
+  signals?: string[];
   createdAt?: number;
 };
 
 export const THEMES: Record<ThemeId, { en: string; zh: string }> = {
-  devices: { en: 'Devices & screen time', zh: '裝置與螢幕時間' },
-  tutors: { en: 'AI reading tutors', zh: 'AI 閱讀輔導' },
-  genai: { en: 'Generative AI for students', zh: '學生使用生成式 AI' },
-  teachers: { en: "Teachers' use of AI", zh: '老師使用 AI' },
-  privacy: { en: 'Privacy & vendors', zh: '隱私與廠商' },
-  evidence: { en: 'Evidence', zh: '成效證據' },
-  equity: { en: 'Equity & access', zh: '公平與使用機會' },
-  decide: { en: 'Who decides', zh: '由誰決定' },
+  screens: { en: 'Screen time by grade', zh: '各年級的螢幕時間' },
+  breaks: { en: 'Breaks, rewards & video', zh: '小休、獎勵與影片' },
+  learning: { en: 'Reading, writing & homework', zh: '閱讀、寫字與功課' },
+  ai: { en: 'AI in the classroom', zh: '課堂上的 AI' },
+  dojo: { en: 'ClassDojo & behavior apps', zh: 'ClassDojo 與行為管理程式' },
+  families: { en: 'Transparency & family choice', zh: '透明度與家長選擇' },
+  teachers: { en: 'Supporting teachers', zh: '支援老師' },
+  decide: { en: 'Who decides, and when', zh: '由誰決定、何時決定' },
   open: { en: 'From participants', zh: '參與者新增' },
 };
 
@@ -43,51 +46,54 @@ const s = (id: string, theme: ThemeId, lean: Lean, en: string, zh: string): Stat
 });
 
 export const SEED_STATEMENTS: Statement[] = [
-  s('d1', 'devices', 'limits', 'Homework in K–5 should be on paper by default, with screens the exception.', '幼稚園至五年級的功課應以紙本為主，螢幕只作例外。'),
-  s('d2', 'devices', 'limits', 'Students in grades 3–5 should share classroom device carts instead of each taking a device home.', '三至五年級學生應共用教室的平板車，而不是每人帶一部裝置回家。'),
-  s('d3', 'devices', 'more', "Having their own school device helps kids whose families can't afford one at home.", '擁有學校配發的裝置，能幫助家裡負擔不起的孩子。'),
-  s('d4', 'devices', 'conditional', "I'd be comfortable with screen time at school if I knew roughly how many minutes a day it was.", '如果我知道孩子每天在學校大約用多少分鐘螢幕，我會比較放心。'),
-  s('d5', 'devices', 'more', 'Learning to type and use a computer is a basic skill kids should start in elementary school.', '學習打字和操作電腦是基本技能，孩子應從小學開始學。'),
+  s('s1', 'screens', 'limits', "Kids in TK through 2nd grade shouldn't use individual devices at school, except for required tests.", '過渡幼稚園至二年級的孩子在學校不應使用個人裝置，必要的測驗除外。'),
+  s('s2', 'screens', 'conditional', 'About 20 minutes a day of device time is the right limit for 3rd graders.', '三年級學生每天大約 20 分鐘的裝置時間是合適的上限。'),
+  s('s3', 'screens', 'more', 'Fixed minute limits by grade are too rigid; teachers should decide how much screen time a lesson needs.', '按年級設定固定分鐘上限太死板；應由老師決定一堂課需要多少螢幕時間。'),
+  s('s4', 'screens', 'more', '4th and 5th graders should be able to bring a school Chromebook home for homework.', '四、五年級學生應可把學校的 Chromebook 帶回家做功課。'),
+  s('s5', 'screens', 'limits', 'Phones and smartwatches should be off and put away for the whole school day.', '手機和智能手錶應在整個上課日關機並收好。'),
+  s('s6', 'screens', 'more', 'My child should be able to keep a smartwatch on so I can reach them directly.', '我的孩子應可戴著智能手錶，讓我能直接聯絡他們。'),
 
-  s('t1', 'tutors', 'conditional', 'An AI reading tutor is fine as a supplement, as long as a teacher — not the software — decides who uses it and when.', 'AI 閱讀輔導可以作為輔助，只要由老師（而不是軟體）決定誰使用、何時使用。'),
-  s('t2', 'tutors', 'limits', 'Reading practice in K–2 should happen with a person — a teacher, aide, or volunteer — not an app.', '幼稚園至二年級的閱讀練習應由真人陪伴——老師、助教或義工——而不是應用程式。'),
-  s('t3', 'tutors', 'more', "If an AI tutor gives every child one-on-one reading practice, that's something our classrooms can't offer otherwise.", '如果 AI 輔導能讓每個孩子都有一對一的閱讀練習，這是我們的課堂原本做不到的。'),
-  s('t4', 'tutors', 'limits', "I'd rather the money for AI reading software went to more reading specialists and aides.", '我寧願把 AI 閱讀軟體的經費用來聘請更多閱讀專家和助教。'),
-  s('t5', 'tutors', 'more', "An AI tutor that can explain things in a family's home language could help kids who are learning English.", '能用家庭母語解說的 AI 輔導，可以幫助正在學英文的孩子。'),
+  s('b1', 'breaks', 'limits', 'Brain breaks should be screen-free: movement, stretching, drawing, or play.', '課堂小休應遠離螢幕：活動、伸展、畫畫或遊戲。'),
+  s('b2', 'breaks', 'more', 'A short dance or yoga video is a fine brain break on a rainy day.', '下雨天時，一段短短的跳舞或瑜伽影片是不錯的小休。'),
+  s('b3', 'breaks', 'limits', "Screens shouldn't be a reward, like movie time or game time for good behavior.", '螢幕不應被當作獎勵，例如表現好就能看電影或玩遊戲。'),
+  s('b4', 'breaks', 'conditional', 'YouTube should be blocked on student devices but still available to teachers for lessons.', '學生裝置應封鎖 YouTube，但老師上課時仍可使用。'),
+  s('b5', 'breaks', 'conditional', 'Afterschool programs at FSK should follow the same screen rules as the school day.', 'FSK 的課後活動應遵守與上課時間相同的螢幕規則。'),
 
-  s('g1', 'genai', 'more', 'Kids will meet AI everywhere; school is the safest place to learn what it gets wrong.', '孩子遲早會到處接觸 AI；學校是學習 AI 會在哪裡出錯最安全的地方。'),
-  s('g2', 'genai', 'limits', 'Generative AI chatbots should be turned off on all K–5 student devices.', '所有幼稚園至五年級學生的裝置都應關閉生成式 AI 聊天機器人。'),
-  s('g3', 'genai', 'conditional', 'Elementary students can learn how AI works and where it fails without using chatbots themselves.', '小學生可以學習 AI 的原理和缺陷，而不必自己使用聊天機器人。'),
-  s('g4', 'genai', 'limits', 'Young kids need to struggle through writing on their own before any tool does it for them.', '年幼的孩子需要先靠自己努力學會寫作，之後才讓任何工具代勞。'),
-  s('g5', 'genai', 'more', 'Used with a teacher, AI can make learning more creative — drawing, storytelling, asking big questions.', '在老師指導下，AI 能讓學習更有創意——畫畫、說故事、提出大問題。'),
+  s('l1', 'learning', 'limits', 'Print books should be the default for teaching reading.', '教閱讀應以紙本書為主。'),
+  s('l2', 'learning', 'limits', 'Handwriting should come first in TK–2, before kids learn to type.', '過渡幼稚園至二年級應先教寫字，之後才學打字。'),
+  s('l3', 'learning', 'more', 'Math practice apps help my child get extra practice at their own level.', '數學練習程式讓我的孩子能按自己的程度多加練習。'),
+  s('l4', 'learning', 'conditional', 'Any practice app should have a stated purpose and a set number of minutes a week.', '任何練習程式都應說明用途，並定好每週使用多少分鐘。'),
+  s('l5', 'learning', 'limits', 'Homework should never require home internet or a school device.', '功課絕不應需要家中網絡或學校裝置才能完成。'),
+  s('l6', 'learning', 'more', 'Typing is a basic skill FSK kids should build before middle school.', '打字是基本技能，FSK 的孩子應在升上初中前練好。'),
 
-  s('te1', 'teachers', 'more', "If AI saves my child's teacher an hour of paperwork a week, that's an hour I want them to have.", '如果 AI 每週能替老師省下一小時的文書工作，我希望老師能擁有這一小時。'),
-  s('te2', 'teachers', 'conditional', 'Teachers should tell families when they use AI to write report card comments or messages home.', '老師用 AI 撰寫成績表評語或給家長的訊息時，應告知家長。'),
-  s('te3', 'teachers', 'conditional', "Teachers need paid training time before they're asked to use any new AI tool.", '在要求老師使用任何新的 AI 工具之前，應給予有薪的培訓時間。'),
-  s('te4', 'teachers', 'limits', "AI should never be used to grade young students' work.", 'AI 絕不應被用來批改低年級學生的作業。'),
-  s('te5', 'teachers', 'more', 'Teachers should be free to try AI tools for lesson planning without asking permission for each one.', '老師應可自由試用 AI 工具來備課，不需要每個工具都申請批准。'),
+  s('a1', 'ai', 'limits', 'There should be no student-facing generative AI in TK–5: no chatbots, AI writing tools, or AI search.', '過渡幼稚園至五年級不應讓學生使用生成式 AI：不用聊天機器人、AI 寫作工具或 AI 搜尋。'),
+  s('a2', 'ai', 'more', "Older elementary kids should try AI tools with a teacher, so they learn what AI gets wrong.", '高年級小學生應在老師指導下試用 AI 工具，學會分辨 AI 會出錯的地方。'),
+  s('a3', 'ai', 'limits', 'Gemini and other built-in AI features should be turned off on student Google accounts.', '學生的 Google 帳戶應關閉 Gemini 及其他內置 AI 功能。'),
+  s('a4', 'ai', 'conditional', "Amira, the AI reading screener, is fine for the district's required 1st and 2nd grade screening, with notice to families first.", 'Amira（AI 閱讀篩檢工具）用於學區規定的一、二年級篩檢是可以的，只要先通知家長。'),
+  s('a5', 'ai', 'more', 'If Amira helps teachers spot reading struggles earlier, FSK should use it beyond the required screening.', '如果 Amira 能幫老師更早發現閱讀困難，FSK 應在規定篩檢之外也使用它。'),
+  s('a6', 'ai', 'limits', 'No student work, photos, or voice recordings should be uploaded to AI tools.', '任何學生作業、照片或錄音都不應上傳到 AI 工具。'),
+  s('a7', 'ai', 'conditional', 'Teachers should tell families when they use AI in their own work, like drafting messages home.', '老師在工作中使用 AI（例如起草給家長的訊息）時，應告知家長。'),
+  s('a8', 'ai', 'more', 'Teachers should be free to use AI for lesson planning and paperwork.', '老師應可自由使用 AI 來備課和處理文書工作。'),
 
-  s('p1', 'privacy', 'limits', "No tool that records my child's voice or face belongs in a classroom without written parent consent.", '任何會錄下孩子聲音或臉孔的工具，未經家長書面同意都不應進入課堂。'),
-  s('p2', 'privacy', 'conditional', "Families should be able to see a plain-language list of every app that collects their child's data.", '家長應能看到一份淺白易懂的清單，列出所有收集孩子資料的應用程式。'),
-  s('p3', 'privacy', 'limits', "Student data should never be used to train a company's AI models.", '學生資料絕不應被用來訓練企業的 AI 模型。'),
-  s('p4', 'privacy', 'conditional', 'Families should be able to opt their child out of an AI tool without the child being left out of the lesson.', '家長應能讓孩子不使用某個 AI 工具，而孩子不會因此被排除在課堂之外。'),
-  s('p5', 'privacy', 'more', "I trust the district to vet education apps for privacy; I don't need to review each one myself.", '我信任學區會審查教育應用程式的隱私保障；我不需要逐一自己檢查。'),
+  s('c1', 'dojo', 'limits', "ClassDojo points shouldn't be shown on the classroom screen where everyone can see them.", 'ClassDojo 的分數不應顯示在全班都看得到的課室螢幕上。'),
+  s('c2', 'dojo', 'conditional', 'If points are used, they should go toward whole-class goals, not individual rankings.', '如果使用積分，應用於全班目標，而不是個人排名。'),
+  s('c3', 'dojo', 'more', "ClassDojo updates are how I know what's happening in my child's class, and I'd miss them.", 'ClassDojo 的更新讓我知道孩子班上的情況，沒有了我會覺得可惜。'),
+  s('c4', 'dojo', 'limits', 'In-class alerts and sounds from behavior apps distract kids more than they help.', '行為管理程式在課堂上的提示和聲音，對孩子的干擾多於幫助。'),
 
-  s('e1', 'evidence', 'conditional', 'SFUSD should show evidence a tool improves learning before expanding it to more classrooms.', '三藩市聯合校區應先證明某工具能改善學習，才擴展到更多課室。'),
-  s('e2', 'evidence', 'more', 'Waiting years for perfect research means our kids fall behind schools that are already experimenting.', '等待多年的完美研究，意味著我們的孩子會落後於已經在嘗試的學校。'),
-  s('e3', 'evidence', 'conditional', 'Each school should report back once a year on how its tech tools are actually working.', '每間學校應每年報告一次其科技工具的實際成效。'),
-  s('e4', 'evidence', 'limits', 'The burden of proof should be on tech companies, not on parents who are worried.', '舉證責任應在科技公司身上，而不是在憂心的家長身上。'),
-  s('e5', 'evidence', 'conditional', "Teachers' observations of what works in their classroom count as real evidence.", '老師在自己課室中觀察到的成效，也算是真正的證據。'),
+  s('f1', 'families', 'conditional', 'FSK should post a list each trimester of every app by grade, its purpose, and minutes per week.', 'FSK 應每學期公佈清單，按年級列出每個應用程式、用途和每週分鐘數。'),
+  s('f2', 'families', 'conditional', 'Families should be able to ask for a paper version of any device activity, with their child staying in the room with classmates.', '家長應可為任何裝置活動要求紙本版本，而孩子仍留在課室與同學一起。'),
+  s('f3', 'families', 'more', 'Asking for family consent on every app would slow teachers down more than it protects kids.', '每個應用程式都要徵求家長同意，對老師的拖累多於對孩子的保護。'),
+  s('f4', 'families', 'conditional', 'Information about classroom technology should reach families in Chinese and Spanish, not just English.', '有關課堂科技的資訊應以中文和西班牙文送達家庭，而不只是英文。'),
+  s('f5', 'families', 'more', "Kids whose families don't have much tech at home need school to teach digital skills.", '家裡科技資源不多的孩子，要靠學校教他們數位技能。'),
 
-  s('q1', 'equity', 'conditional', 'Some kids have every device at home and some have none; school tech should close that gap, not widen it.', '有些孩子家裡什麼裝置都有，有些一部也沒有；學校的科技應縮小差距，而不是擴大。'),
-  s('q2', 'equity', 'more', 'Kids whose parents are less comfortable with tech depend on school to teach digital skills.', '父母不太熟悉科技的孩子，要靠學校教他們數位技能。'),
-  s('q3', 'equity', 'limits', 'Screen-heavy learning hurts most the kids who already have the most screen time at home.', '大量依賴螢幕的學習，對在家已有最多螢幕時間的孩子傷害最大。'),
-  s('q4', 'equity', 'conditional', "Information about school tech should reach families in their home language, not just English.", '學校有關科技的資訊應以家庭的母語送達，而不只是英文。'),
-  s('q5', 'equity', 'more', "AI tools could give students with learning differences support that's hard to get otherwise.", 'AI 工具可以為有學習差異的學生提供平常難以取得的支援。'),
+  s('t1', 'teachers', 'conditional', "Teachers need paid planning time before they're asked to change how they use tech.", '在要求老師改變使用科技的方式之前，應給他們有薪的備課時間。'),
+  s('t2', 'teachers', 'limits', 'PTA money should go to books, manipulatives, and rainy-day kits before software.', '家長教師會的經費應優先用於書本、教具和雨天活動包，然後才是軟件。'),
+  s('t3', 'teachers', 'more', "I trust FSK teachers' judgment about technology more than a school-wide rulebook.", '在科技方面，我信任 FSK 老師的判斷多於一套全校規則。'),
+  s('t4', 'teachers', 'conditional', "I'd volunteer for reading buddies or indoor recess if it helped classrooms use fewer screens.", '如果有助課室減少使用螢幕，我願意做閱讀夥伴或室內小息的義工。'),
+  s('t5', 'teachers', 'conditional', 'A teacher should be able to propose a tool outside the policy and get an answer within two weeks.', '老師應可提出使用政策以外的工具，並在兩週內得到答覆。'),
 
-  s('w1', 'decide', 'conditional', 'Parents and teachers at each school should have a say in which tools are used there, not just the district.', '每間學校的家長和老師應對學校使用哪些工具有發言權，而不只是由學區決定。'),
-  s('w2', 'decide', 'limits', 'Big tech contracts, like ChatGPT for district staff, should go to a public school board vote first.', '像為學區職員購買 ChatGPT 這類大型科技合約，應先交由教育委員會公開投票。'),
-  s('w3', 'decide', 'limits', "Tech companies shouldn't help write the policies for the schools they sell to.", '科技公司不應參與制定它們銷售對象學校的政策。'),
-  s('w4', 'decide', 'more', 'The district should be able to move quickly on tech, keeping families informed rather than asking each time.', '學區應能在科技方面迅速行動，只需告知家長，而不必每次都徵詢意見。'),
-  s('w5', 'decide', 'conditional', 'Whatever the board decides in March, FSK families should hear back what changed and why.', '無論教育委員會三月作出什麼決定，FSK 家庭都應得知有什麼改變、為什麼。'),
+  s('w1', 'decide', 'more', "FSK should wait for SFUSD's March 2027 policy instead of writing its own rules now.", 'FSK 應等待三藩市聯合校區 2027 年 3 月的政策，而不是現在自訂規則。'),
+  s('w2', 'decide', 'conditional', 'A parent survey alone isn’t enough; teachers and staff need an equal voice in this policy.', '單靠家長問卷並不足夠；老師和職員在這項政策上應有同等的發言權。'),
+  s('w3', 'decide', 'conditional', 'The policy should be reviewed every spring with teachers, families, and 3rd–5th graders.', '政策應每年春季與老師、家長及三至五年級學生一起檢討。'),
+  s('w4', 'decide', 'conditional', 'Whatever FSK decides, families should hear back what changed and why.', '無論 FSK 作出什麼決定，家長都應得知有什麼改變、為什麼。'),
 ];

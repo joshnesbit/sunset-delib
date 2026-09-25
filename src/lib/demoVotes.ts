@@ -11,7 +11,7 @@ const ARCHETYPES: Arch[] = [
   { more: 0.85, limits: 0.2, conditional: 0.55 },
   { more: 0.5, limits: 0.45, conditional: 0.85 },
 ];
-const SHARED = new Set(['q4', 'w5', 'te3', 'p2']);
+const SHARED = new Set(['w4', 'f1', 't1', 'f2']);
 
 function rng(seed: number) {
   return () => {

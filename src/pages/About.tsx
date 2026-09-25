@@ -39,8 +39,8 @@ export default function About() {
     [
       L('Where the statements came from', '陳述從何而來'),
       L(
-        'The first cards are a draft written from public reporting and reviewed by an FSK parent, an FSK teacher, and a neighbor. None of them are quotes from FSK families. Every card you add is read by a steward before it goes out.',
-        '最初的卡片是根據公開報導撰寫的草稿，經一位 FSK 家長、一位 FSK 老師和一位鄰居審閱。它們都不是 FSK 家庭的原話。你新增的每則陳述都會先經管理員閱讀才發佈。'
+        "The first cards turn the proposals in FSK's draft Tech With Intention policy (v0.3), and the arguments for and against them, into statements you can agree or disagree with. They are reviewed by an FSK parent, an FSK teacher, and a neighbor. None of them are quotes from FSK families. Every card you add is read by a steward before it goes out.",
+        '最初的卡片把 FSK「有意識地使用科技」政策草案（第 0.3 版）的建議，以及支持和反對的論點，寫成可以同意或不同意的陳述，並經一位 FSK 家長、一位 FSK 老師和一位鄰居審閱。它們都不是 FSK 家庭的原話。你新增的每則陳述都會先經管理員閱讀才發佈。'
       ),
     ],
   ];

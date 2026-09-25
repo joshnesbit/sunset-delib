@@ -11,6 +11,25 @@ export const MIN_VOTES = 10;
 export const MIN_PARTICIPANTS = 25;
 const BAR = 0.6;
 const MIN_N = 3;
+/** Sessions whose typical gap between votes is under this are set aside: nobody reads a card that fast. */
+const FAST_MS = 1000;
+
+export function fastVoters(votes: Vote[]): Set<string> {
+  const by = new Map<string, number[]>();
+  for (const v of votes) {
+    if (v.at <= 0) continue;
+    if (!by.has(v.pid)) by.set(v.pid, []);
+    by.get(v.pid)!.push(v.at);
+  }
+  const out = new Set<string>();
+  for (const [pid, ts] of by) {
+    if (ts.length < MIN_VOTES) continue;
+    ts.sort((a, b) => a - b);
+    const gaps = ts.slice(1).map((t, i) => t - ts[i]).sort((a, b) => a - b);
+    if (gaps[Math.floor(gaps.length / 2)] < FAST_MS) out.add(pid);
+  }
+  return out;
+}
 
 export type Tally = { n: number; agree: number; disagree: number; pass: number; pa: number; pd: number };
 export type Distinct = { sid: string; pa: number; restPa: number; pd: number; restPd: number };
@@ -27,6 +46,7 @@ export type Analysis = {
   roleAgree: RoleRow[];
   roleDiffer: RoleRow[];
   staffEnough: boolean;
+  setAside: number;
 };
 
 type VoteMap = Map<string, Map<string, number>>;
@@ -48,7 +68,8 @@ function buildMap(votes: Vote[], live: Set<string>): VoteMap {
 
 export function countEligible(participants: { id: string }[], statements: Statement[], votes: Vote[]): number {
   const m = buildMap(votes, new Set(statements.map((s) => s.id)));
-  return participants.filter((p) => (m.get(p.id)?.size ?? 0) >= MIN_VOTES).length;
+  const fast = fastVoters(votes);
+  return participants.filter((p) => !fast.has(p.id) && (m.get(p.id)?.size ?? 0) >= MIN_VOTES).length;
 }
 
 function tally(m: VoteMap, pids: string[], sid: string): Tally {
@@ -130,7 +151,9 @@ function silhouette(P: Pt[], a: number[], k: number): number {
 export function analyze(participants: { id: string; role: Role }[], statements: Statement[], votes: Vote[]): Analysis | null {
   const sids = statements.map((s) => s.id);
   const m = buildMap(votes, new Set(sids));
-  const people = participants.filter((p) => (m.get(p.id)?.size ?? 0) >= MIN_VOTES);
+  const fast = fastVoters(votes);
+  const setAside = participants.filter((p) => fast.has(p.id)).length;
+  const people = participants.filter((p) => !fast.has(p.id) && (m.get(p.id)?.size ?? 0) >= MIN_VOTES);
   if (people.length < 6) return null;
 
   const roles: Record<Role, number> = { parent: 0, staff: 0, both: 0 };
@@ -210,6 +233,6 @@ export function analyze(participants: { id: string; role: Role }[], statements: 
     eligible: people.length, roles, k, groups,
     points: P.map((p, i) => ({ x: p[0], y: p[1], g: remap[i] })),
     consensus, divisive: divisive.slice(0, 5),
-    roleAgree: roleAgree.slice(0, 6), roleDiffer: roleDiffer.slice(0, 5), staffEnough,
+    roleAgree: roleAgree.slice(0, 6), roleDiffer: roleDiffer.slice(0, 5), staffEnough, setAside,
   };
 }

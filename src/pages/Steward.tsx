@@ -161,6 +161,9 @@ function PendingCard({ s }: { s: Statement }) {
       <p className="label text-muted-foreground">
         From a {s.authorRole === 'staff' ? 'teacher' : s.authorRole === 'both' ? 'parent & teacher' : 'parent'}
       </p>
+      {s.signals?.includes('fast') && (
+        <span className="chip self-start bg-secondary text-secondary-foreground">Written in under 4 seconds: check it reads like a person</span>
+      )}
       <label className="label text-muted-foreground" htmlFor={`en-${s.id}`}>English</label>
       <textarea id={`en-${s.id}`} className={inputCls} rows={2} value={en} onChange={(e) => setEn(e.target.value)} />
       <label className="label text-muted-foreground" htmlFor={`zh-${s.id}`}>繁體中文</label>
