@@ -1,0 +1,44 @@
+{
+  "collections": {
+    "participants": {
+      "fields": {
+        "pid": { "type": "string", "required": true, "unique": true, "maxLength": 64 },
+        "role": { "type": "string", "required": true, "maxLength": 8 },
+        "lang": { "type": "string", "maxLength": 4 },
+        "createdAt": { "type": "number", "required": true },
+        "votes": { "type": "object" },
+        "times": { "type": "object" }
+      }
+    },
+    "statements": {
+      "fields": {
+        "sid": { "type": "string", "required": true, "unique": true, "maxLength": 16 },
+        "en": { "type": "string", "maxLength": 160 },
+        "zh": { "type": "string", "maxLength": 160 },
+        "authorRole": { "type": "string", "maxLength": 8 },
+        "authorId": { "type": "string", "maxLength": 64 },
+        "signals": { "type": "array" },
+        "createdAt": { "type": "number", "required": true }
+      }
+    },
+    "flags": {
+      "fields": {
+        "sid": { "type": "string", "required": true, "maxLength": 16 },
+        "createdAt": { "type": "number", "required": true }
+      }
+    },
+    "decisions": {
+      "fields": {
+        "kind": { "type": "string", "required": true, "maxLength": 12 },
+        "target": { "type": "string", "required": true, "maxLength": 64 },
+        "en": { "type": "string", "maxLength": 400 },
+        "zh": { "type": "string", "maxLength": 400 },
+        "theme": { "type": "string", "maxLength": 12 },
+        "status": { "type": "string", "maxLength": 10 },
+        "hidden": { "type": "boolean" },
+        "name": { "type": "string", "maxLength": 60 },
+        "createdAt": { "type": "number", "required": true }
+      }
+    }
+  }
+}

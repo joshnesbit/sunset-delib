@@ -32,8 +32,8 @@ export default function About() {
     [
       L('Your data', '你的資料'),
       L(
-        'No names, no emails. We keep your role (parent, teacher/staff, or both), your language, and your votes. Nothing is sold, and nothing is used to train AI.',
-        '不需姓名或電郵。我們只保留你的身分類別（家長、老師／職員或兩者）、語言和投票。資料不會出售，也不會用來訓練 AI。'
+        'No names, no emails. We keep your role (parent, teacher/staff, or both), your language, and your votes. They are stored anonymously in a shared community backend, where anyone with the app’s ID could read them. Nothing is sold, and nothing is used to train AI.',
+        '不需姓名或電郵。我們只保留你的身分類別（家長、老師／職員或兩者）、語言和投票。這些資料以匿名方式存放在共享的社區資料庫，任何擁有此應用程式 ID 的人都可讀取。資料不會出售，也不會用來訓練 AI。'
       ),
     ],
     [

@@ -1,7 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import TopBar from '@/components/TopBar';
-import { liveStatements, textOf, useStore } from '@/lib/store';
+import SyncLine from '@/components/SyncLine';
+import { canSteward, liveStatements, textOf, useStore } from '@/lib/store';
+import { cloudReady } from '@/lib/cloud';
 import { analyze } from '@/lib/clustering';
 import { demoData } from '@/lib/demoVotes';
 import { SEED_STATEMENTS, THEMES, type Statement, type ThemeId } from '@/data/statements';
@@ -22,6 +24,15 @@ export default function Steward() {
   const setGroupName = useStore((s) => s.setGroupName);
   const resetLocal = useStore((s) => s.resetLocal);
   const [useDemo, setUseDemo] = useState(false);
+  const member = useStore((s) => s.member);
+  const refresh = useStore((s) => s.refresh);
+  const checkMember = useStore((s) => s.checkMember);
+  const signOut = useStore((s) => s.signOut);
+
+  useEffect(() => {
+    void checkMember();
+    void refresh();
+  }, [checkMember, refresh]);
 
   const byId = useMemo(() => new Map<string, Statement>([...SEED_STATEMENTS, ...submitted].map((s) => [s.id, s])), [submitted]);
   const pending = submitted.filter((s) => s.status === 'pending');
@@ -35,6 +46,8 @@ export default function Steward() {
     }
     return analyze(participants, liveStatements(submitted, hiddenSeeds), votes);
   }, [useDemo, participants, votes, submitted, hiddenSeeds]);
+
+  if (cloudReady && !canSteward(member)) return <Gate />;
 
   const hideStatement = (sid: string) => {
     if (sid.startsWith('p-')) moderate(sid, { status: 'hidden' });
@@ -68,7 +81,13 @@ export default function Steward() {
             <span className="chip bg-accent text-accent-foreground">{pending.length} waiting</span>
             <span className="chip bg-destructive text-destructive-foreground">{flagGroups.length} flagged</span>
           </div>
-          <p className="text-sm text-muted-foreground">Saved on this device only for now. Shared saving and steward sign-in come with the backend.</p>
+          <SyncLine />
+          {member && (
+            <p className="text-sm text-muted-foreground">
+              Signed in as {member.email ?? member.name}.{' '}
+              <button type="button" className="underline underline-offset-2" onClick={() => void signOut()}>Sign out</button>
+            </p>
+          )}
         </header>
 
         <Block title="Waiting for review">
@@ -137,13 +156,62 @@ export default function Steward() {
             <button className="pill pill-agree flex-1" onClick={exportCsv} disabled={!votes.length}>Export votes (CSV)</button>
             <button
               className="pill pill-quiet flex-1"
-              onClick={() => { if (confirm('Erase all votes, statements, and flags on this device?')) resetLocal(); }}
+              onClick={() => { if (confirm('End the voting session on this device? Shared votes stay in the backend.')) resetLocal(); }}
             >
-              Reset this device
+              End this device's session
             </button>
           </div>
           <p className="text-sm text-muted-foreground">The export holds role and votes only, with no names and no contact details.</p>
         </Block>
+      </main>
+    </div>
+  );
+}
+
+function Gate() {
+  const member = useStore((s) => s.member);
+  const requestCode = useStore((s) => s.requestCode);
+  const verifyCode = useStore((s) => s.verifyCode);
+  const signOut = useStore((s) => s.signOut);
+  const [email, setEmail] = useState('');
+  const [code, setCode] = useState('');
+  const [step, setStep] = useState<'email' | 'code'>('email');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const run = async (fn: () => Promise<void>) => {
+    setBusy(true);
+    setError(null);
+    try { await fn(); } catch (e) { setError(e instanceof Error ? e.message : String(e)); } finally { setBusy(false); }
+  };
+
+  return (
+    <div className="mx-auto min-h-dvh max-w-md">
+      <TopBar />
+      <main className="flex flex-col gap-5 px-5 py-10">
+        <p className="label text-muted-foreground">Steward</p>
+        <h1 className="text-3xl font-semibold">Sign in to tend the conversation</h1>
+        {member ? (
+          <>
+            <p>{member.email ?? member.name} isn't on the steward list for this conversation.</p>
+            <button className="pill pill-quiet" onClick={() => void signOut()}>Use a different email</button>
+          </>
+        ) : step === 'email' ? (
+          <form className="flex flex-col gap-3" onSubmit={(e) => { e.preventDefault(); void run(async () => { await requestCode(email); setStep('code'); }); }}>
+            <label htmlFor="st-email" className="label text-muted-foreground">Email</label>
+            <input id="st-email" type="email" required autoComplete="email" className={inputCls} value={email} onChange={(e) => setEmail(e.target.value)} />
+            <button className="pill pill-agree" disabled={busy || !email.includes('@')}>{busy ? 'Sending…' : 'Send me a code'}</button>
+          </form>
+        ) : (
+          <form className="flex flex-col gap-3" onSubmit={(e) => { e.preventDefault(); void run(() => verifyCode(email, code)); }}>
+            <p>Check {email} for a 6-digit code.</p>
+            <label htmlFor="st-code" className="label text-muted-foreground">Code</label>
+            <input id="st-code" inputMode="numeric" autoComplete="one-time-code" maxLength={6} className={inputCls} value={code} onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))} />
+            <button className="pill pill-agree" disabled={busy || code.length !== 6}>{busy ? 'Checking…' : 'Sign in'}</button>
+            <button type="button" className="label self-start text-muted-foreground" onClick={() => { setStep('email'); setCode(''); }}>← Different email</button>
+          </form>
+        )}
+        {error && <p className="text-sm text-[var(--coral-ink)]" role="alert">{error}</p>}
       </main>
     </div>
   );

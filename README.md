@@ -96,7 +96,9 @@ so the same file can later run server-side unchanged.
 | `src/data/statements.ts` | **The 43 bilingual seed statements** across 8 themes, drawn from FSK's draft *Tech With Intention* policy (v0.3). This is the file the editorial trio edits |
 | `src/pages/Terms.tsx` | Terms of Use & Moderation Policy, linked from the add-a-statement screen |
 | `src/lib/i18n.ts` | Every interface string in English and Traditional Chinese |
-| `src/lib/store.ts` | Votes, participants, submissions, flags (on-device for now) |
+| `src/lib/store.ts` | Votes, participants, submissions, flags, synced to Community Cloud |
+| `src/lib/cloud.ts` | Backend requests, paging, and the `STEWARDS` list |
+| `cloud-schema.json` | Typed collections the backend validates on every write |
 | `src/lib/clustering.ts` | PCA + k-means + consensus / divisive / role analysis |
 | `src/lib/demoVotes.ts` | Synthetic vote matrix for `?demo=1` only. Never mixed with real votes |
 | `src/index.css` | Design tokens: dune sand, driftwood brown, green Agree, coral Disagree |
@@ -123,9 +125,11 @@ parent/teacher comparison and divisions, the demo report, the steward page, and 
 
 **Not ready for families yet:**
 
-- **Votes are saved in each browser only.** Nothing is shared across phones
-  yet, so a real run needs the shared backend (next pass).
-- **The steward page isn't locked.** Anyone with the link can open it.
+- **No stewards are listed yet.** Votes and statements now go to the shared
+  Community Cloud backend, and the steward page asks for email-code sign-in.
+  Until emails are added to `STEWARDS` in `src/lib/cloud.ts`, nobody can moderate.
+- **Anonymous writes are open.** Steward decisions only count when signed by a
+  listed steward, but vote-stuffing is caught only by the fast-voter set-aside.
 - **The Chinese is a first draft** and needs a native reader, both the interface
   text and the statements.
 - **The About page says an FSK parent and teacher reviewed the statements.**
@@ -139,7 +143,7 @@ parent/teacher comparison and divisions, the demo report, the steward page, and 
 - [ ] Native reader checks all Traditional Chinese
 - [ ] A named FSK steward (principal, PTA or SSC chair) agrees to answer for this,
       and their name goes on About
-- [ ] Shared backend and steward sign-in wired up
+- [ ] Steward sign-in emails added to `STEWARDS` in `src/lib/cloud.ts`
 - [ ] Paper ballots at the front office and pickup, plus a volunteer to key them in
 - [ ] QR code on the 43rd Ave fence and in school newsletters, in both languages
 - [ ] A two-week window, and a closing SSC or PTA meeting date (list it on
@@ -175,7 +179,8 @@ to **Involve**: the school community's shared ground shapes the input the board
 receives, in public.
 
 **Data promise:** no names, emails, or IP addresses. We keep role, language, and
-votes only. Nothing is sold, and nothing is used to train AI.
+votes only, stored anonymously in a shared community backend that anyone with
+the app's ID can read. Nothing is sold, and nothing is used to train AI.
 
 ## Remixing for another school
 

@@ -1,6 +1,7 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import TopBar from '@/components/TopBar';
+import SyncLine from '@/components/SyncLine';
 import { liveStatements, textOf, useStore, type Lang } from '@/lib/store';
 import { analyze, countEligible, MIN_PARTICIPANTS, MIN_VOTES } from '@/lib/clustering';
 import { demoData } from '@/lib/demoVotes';
@@ -16,7 +17,12 @@ export default function Report() {
   const submitted = useStore((s) => s.submitted);
   const hiddenSeeds = useStore((s) => s.hiddenSeeds);
   const groupNames = useStore((s) => s.groupNames);
+  const refresh = useStore((s) => s.refresh);
   const [params] = useSearchParams();
+
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
   const demo = params.get('demo') === '1';
   const L = (en: string, zh: string) => (lang === 'zh' ? zh : en);
 
@@ -50,6 +56,7 @@ export default function Report() {
           <h1 className="text-3xl font-semibold leading-tight md:text-4xl">
             {L('Where FSK parents and teachers stand', 'FSK 家長與老師的看法')}
           </h1>
+          {!demo && <SyncLine />}
         </header>
 
         {!ready || !result ? (

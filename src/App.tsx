@@ -10,6 +10,11 @@ import Terms from '@/pages/Terms';
 
 export default function App() {
   const lang = useStore((s) => s.lang);
+  const refresh = useStore((s) => s.refresh);
+
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
 
   useEffect(() => {
     document.documentElement.lang = lang === 'zh' ? 'zh-Hant' : 'en';
