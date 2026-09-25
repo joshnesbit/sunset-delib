@@ -11,15 +11,15 @@ export default function About() {
     [
       L('What this is', '這是什麼'),
       L(
-        'A conversation among Francis Scott Key parents and teachers about technology and AI in our classrooms. You vote on short statements, add your own, and together we find where we actually agree.',
-        '這是 Francis Scott Key 家長與老師之間，關於課堂科技與 AI 的對話。你對簡短的陳述投票、加入自己的看法，我們一起找出真正的共識。'
+        'A conversation among Francis Scott Key parents and teachers about technology and AI in our classrooms. You vote on short statements, add your own, and together we find where we actually agree. That common ground helps inform FSK’s school policy, and it may help SFUSD as it sets district policy too.',
+        '這是 Francis Scott Key 家長與老師之間，關於課堂科技與 AI 的對話。你對簡短的陳述投票、加入自己的看法，我們一起找出真正的共識。這些共識將協助制定 FSK 的學校政策，也可能對學區制定政策有所幫助。'
       ),
     ],
     [
       L('Why now', '為什麼是現在'),
       L(
-        "SFUSD's board plans to vote on a technology and AI policy in March 2027. What FSK families and staff agree on goes to the board and the Superintendent's office before that vote.",
-        '三藩市聯合校區教育委員會計劃於 2027 年 3 月表決科技與 AI 政策。FSK 家庭與職員的共識會在表決前送交教育委員會及學監辦公室。'
+        "FSK is drafting its own technology policy now, and SFUSD's board plans to vote on a district technology and AI policy in March 2027. What FSK families and staff agree on can inform both.",
+        'FSK 正在草擬自己的科技政策，而三藩市聯合校區教育委員會計劃於 2027 年 3 月表決全學區的科技與 AI 政策。FSK 家庭與職員的共識可以為兩者提供參考。'
       ),
     ],
     [
@@ -54,14 +54,22 @@ export default function About() {
         <section className="flex flex-col gap-2 rounded-[var(--radius)] bg-card p-5 shadow-sm">
           <p className="label text-[var(--coral-ink)]">{L('Who tends this', '誰負責')}</p>
           <p>
-            <strong>Josh</strong>, {L('Outer Sunset neighbor, keeps the tool running.', '日落區鄰居，負責維護這個工具。')}
+            <strong>Josh</strong>,{' '}
+            {L(
+              'Outer Sunset neighbor and FSK steward for this conversation. He keeps the tool running, reads every new statement, and shares the results.',
+              '日落區鄰居，也是這次對話的 FSK 負責人。他負責維護工具、閱讀每則新陳述，並分享結果。'
+            )}
           </p>
           <p>
-            <strong>{L('FSK steward: being named', 'FSK 負責人：確認中')}</strong>{' '}
-            {L('— the person at school who answers for this and reads the results aloud.', '，校內負責回應並公開宣讀結果的人。')}
+            <a href="mailto:josh@relationaltechproject.org" className="text-[var(--coral-ink)] underline underline-offset-2">
+              josh@relationaltechproject.org
+            </a>
           </p>
           <p className="text-sm text-muted-foreground">
-            {L('Rather talk in person? Stop by the FSK front office, 1530 43rd Ave. Paper ballots are available there.', '想當面談？歡迎到 FSK 校務處（43 街 1530 號），那裡有紙本選票。')}
+            {L(
+              'Rather talk in person? Email Josh and we can find a time at drop-off or pick-up.',
+              '想當面談？請電郵 Josh，我們可以在接送孩子時約個時間。'
+            )}
           </p>
         </section>
 
